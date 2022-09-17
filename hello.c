@@ -14,7 +14,12 @@ void putc(char type){
 	unsigned short data = (color << 8) + type;
 	vram[offset]= data;
 	offset= offset+1;
-	
+	if(offset==2000){
+		for(int i = 0; i<2000; i++){
+			vram[i]=vram[i+80];
+		}	
+		offset=1920;
+	}
 }
 
 uint8_t inb (uint16_t _port) {
@@ -24,9 +29,8 @@ uint8_t inb (uint16_t _port) {
 }
 
 void main() {
-
 	esp_printf(putc, "Hello World!");
-		
+	}
 
     while(1) {
         uint8_t status = inb(0x64);
