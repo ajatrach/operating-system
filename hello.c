@@ -3,7 +3,19 @@
 
 #define MULTIBOOT2_HEADER_MAGIC         0xe85250d6
 
-const unsigned int multiboot_header[]  = {MULTIBOOT2_HEADER_MAGIC, 0, 16, -(16+MULTIBOOT2_HEADER_MAGIC), 0, 12};
+const unsigned int multiboot_header[]  = {MULTIBOOT2_HEADER_MAGIC, 0, 16, -(16+MULTIBOOT2_HEADER_MAGIC), 0, 12};   //hard-coded array  grub is the bootloader,
+														   //multibootheader tells grub where to put the OS. 
+														   //Grub likes it at address 0
+
+int offset=0;
+void putc(char type){
+	unsigned short *vram = (unsigned short*)0xb8000;   //base address of video mem
+	const unsigned char color = 7; //color is 7
+	unsigned short data = (color << 8) + type;
+	vram[offset]= data;
+	offset= offset+1;
+	
+}
 
 uint8_t inb (uint16_t _port) {
     uint8_t rv;
@@ -12,8 +24,9 @@ uint8_t inb (uint16_t _port) {
 }
 
 void main() {
-    unsigned short *vram = (unsigned short*)0xb8000; // Base address of video mem
-    const unsigned char color = 7; // gray text on black background
+
+	esp_printf(putc, "Hello World!");
+		
 
     while(1) {
         uint8_t status = inb(0x64);
