@@ -29,7 +29,9 @@ uint8_t inb (uint16_t _port) {
 }
 
 void main() {
-	esp_printf(putc, "Hello World!");
+
+	for (int i = 0; i<100; i++){
+	esp_printf(putc, "Hello World! hello hi abcdefghijklmnopqrstuvwxyzlalalalalalalalalalalalalalaalalalalallalala");
 	}
 
     while(1) {
