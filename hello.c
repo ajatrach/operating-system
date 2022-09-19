@@ -22,23 +22,35 @@ void putc(char type){
 	}
 }
 
+/*
+* inb
+*
+* Reads from I/O port _port, and returns a one byte value
+*/
 uint8_t inb (uint16_t _port) {
     uint8_t rv;
     __asm__ __volatile__ ("inb %1, %0" : "=a" (rv) : "dN" (_port));
     return rv;
 }
+/*
+* outb
+*
+* Writes val to I/O port _port
+*/
+void outb (uint16_t _port, uint8_t val) {
+__asm__ __volatile__ ("outb %0, %1" : : "a" (val), "dN" (_port) );
+}
+
+
 
 void main() {
-
-	for (int i = 0; i<100; i++){
-	esp_printf(putc, "Hello World! hello hi abcdefghijklmnopqrstuvwxyzlalalalalalalalalalalalalalaalalalalallalala");
-	}
-
+	
     while(1) {
         uint8_t status = inb(0x64);
 
-        if(status & 1) {
+        if(status&1 == 1) {
             uint8_t scancode = inb(0x60);
+	    esp_printf(putc, scancode);
         }
     }
 }
