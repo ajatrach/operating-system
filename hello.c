@@ -50,7 +50,8 @@ void main() {
 
         if(status&1 == 1) {
             uint8_t scancode = inb(0x60);
-	    esp_printf(putc, scancode);
+	    esp_printf(putc,("scancode = %d\n"),scancode);
+	    
         }
     }
 }
