@@ -3,7 +3,8 @@
 
 #define MULTIBOOT2_HEADER_MAGIC         0xe85250d6
 
-const unsigned int multiboot_header[]  = {MULTIBOOT2_HEADER_MAGIC, 0, 16, -(16+MULTIBOOT2_HEADER_MAGIC), 0, 12};   //hard-coded array  grub is the bootloader,
+const unsigned int multiboot_header[]__attribute__((section(".multiboot"))) = {MULTIBOOT2_HEADER_MAGIC, 0, 16, -(16+MULTIBOOT2_HEADER_MAGIC), 0, 12};
+   //hard-coded array  grub is the bootloader,
 														   //multibootheader tells grub where to put the OS. 
 														   //Grub likes it at address 0
 
@@ -83,7 +84,9 @@ unsigned char keyboard_map[128]=  //needs fixing
 };
 
 void main() {
-	
+	init_pfa_list();
+	struct ppage *thing = allocate_physical_pages(2);
+	free_physical_pages_function(thing);	
     while(1) {
         uint8_t status = inb(0x64);
 

@@ -9,20 +9,20 @@ void init_pfa_list(void) {
 //will initialize the linked list of free pages. It will loop through every element of your statically allocated
 //physical page array and link it into the list.
 //
-	extern void *_end_kernel;
-	int starting_address =4000; // _end_kernel&000 + 4000;
+	extern int _end_kernel;
+	int starting_address = (((unsigned int)&_end_kernel)&0xfffff000) + 4096;
 	struct ppage* temp;
-	struct ppage* iterator;	
+	struct ppage* iterator=free_physical_pages;	
 	for (int i=0; i<=128; i++){
 		temp=&physical_page_array[i];           
-		temp->physical_addr= starting_address+(4000*i);     //aquiring physical address
+		temp->physical_addr= starting_address+(4096*i);     //aquiring physical address
 		temp->next=NULL;
 		temp->prev=NULL;
 
 		if(free_physical_pages == NULL){
 			free_physical_pages=temp;
 		}else{
-			iterator = free_physical_pages;         //set iterator at head
+			
         	        while(iterator->next != NULL){  //traverse list
                         iterator= iterator->next;
                		}
