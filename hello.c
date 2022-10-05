@@ -1,5 +1,6 @@
-
 #include <stdint.h>
+#include <string.h>
+#include "page.h"
 
 #define MULTIBOOT2_HEADER_MAGIC         0xe85250d6
 
@@ -84,10 +85,47 @@ unsigned char keyboard_map[128]=  //needs fixing
 };
 
 void main() {
+
+//Initialization of the page directory and page table (use a for() loop in your main function):
+//(a) Zero out every element of the page directory. You could use memset for this.
+	memset(pd,0,sizeof(pd));
+//(b) Set the present and rw bits to 1 for page directory element 0.
+	pd[0].present=1;
+	pd[0].rw=1;
+
+//(c) Point the page directory element 0 to the page table your allocated by setting the frame field.
+	pd[0].frame=pt>>12; //element 0 of page directory needs to point to second level of page table
+
+//(d) Set up identity mapping in the page table by setting the frame field in the page table entries equal to the index
+//	of the entry. For example, page table[0].frame = 0 page table[1].frame = 1, and so on. Do this for every
+//	element of the page table. Also set the present and rw bits to 1 for each element of the page table.
+	for(int i =0; i<=1024;i++){
+		pt[i] =i; //physical address
+		pt[i].present =1;
+		pt[i].rw=1;
+	}
+
+
+//4. Load the CR3 register with the address of the page directory. This can be done in C in the following way:
+// Put the address of page_directory[] into CR3
+	asm("mov %0,%%cr3"
+	:
+	: "r"(pd)
+	:);
+//5. Enable paging by setting bits 0 and 31 in the CR0 register:
+	asm("mov %cr0, %eax\n"
+	"or $0x80000001,%eax\n"
+	"mov %eax,%cr0");
+
+
+	//testing if allocating pages works
 	init_pfa_list();
 	struct ppage *thing = allocate_physical_pages(2);
 	free_physical_pages_function(thing);	
-    while(1) {
+    
+	
+	//while loop to print to screen
+	while(1) {
         uint8_t status = inb(0x64);
 
         if(status&1 == 1) {
