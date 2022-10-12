@@ -93,7 +93,7 @@ void main() {
 	struct ppage *thing = allocate_physical_pages(2);
 
 	//testing if mapping pages works
-	map_pages(4000000, thing, 1);
+	map_pages(0x4000000, thing, 1);
 
 
 	free_physical_pages_function(thing);	

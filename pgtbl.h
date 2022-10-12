@@ -24,6 +24,6 @@ struct page
    uint32_t frame      : 20;  // Frame address (shifted right 12 bits)
 };
 
-void *map_pages(void *vaddr, struct page *ppage, struct page_directory_entry *pd);
+void *map_pages(void *vaddr, struct page *ppage, struct page_directory_entry *paged);
 
 void map_pages_init();

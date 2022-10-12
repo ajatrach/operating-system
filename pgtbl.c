@@ -12,7 +12,7 @@ struct page another_pt[1024] __attribute__((aligned(4096))); //another pt for al
 // - struct physical_page *ppage: a linked list of physical page data structures returned by your page frame allocator
 // - struct page_directory_entry *pd: the root of your page table in memory  is pd
 // call apge frame alloc choose random va to map it to call map pages 
-void *map_pages(void *vaddr, struct page *ppage, struct page_directory_entry *pd) {
+void *map_pages(void *vaddr, struct page *ppage, struct page_directory_entry *paged) {  //paged is if you want to pick a new page directory- this time we are using pd, not paged
    	uint32_t vpn = (long int)vaddr>>12; //aquire virtual page number
 	uint32_t directory_number = vpn>>10; //aquire page directory number/entry/location
 	uint32_t page_table_number = vpn&0x3FF; //aquire page table number/entry/location
@@ -20,10 +20,10 @@ void *map_pages(void *vaddr, struct page *ppage, struct page_directory_entry *pd
 	//initialize the pd at location given
 	pd[directory_number].rw=1;
 	pd[directory_number].present=1;
-	pd[directory_number].frame=(long int)another_pt>>12;
+	pd[directory_number].frame=(long int)another_pt>>12; //info mem doesn't show anything here
 	
 	//assign physical address
-	another_pt[page_table_number].frame= (int)ppage>>12;
+	another_pt[page_table_number].frame= (int)ppage>>12;  //crashes here
 	another_pt[page_table_number].rw=1;
 	another_pt[page_table_number].present=1;
 	
