@@ -62,16 +62,3 @@ void free_physical_pages_function(struct ppage *ppage_list){
 	free_physical_pages=ppage_list;       //reset head of free list to start of freed portion
 }
 
-
-//down here begin page frame shit
-
-struct page_directory_entry pd[1024]; __attribute__((aligned(4096)));   //allocating 4 kilobyte block mem for the page directory. least 12 sig bits are 0
-                                                                        
-struct page pt[1024] __attribute__((aligned(4096)));  //allocate 4 kb mem for page table
-
-//maps a list of physical pages to a specified virtual address
-// - void *vaddr: The virtual address to map your pages
-// - struct physical_page *ppage: a linked list of physical page data structures returned by your page frame allocator
-// - struct page_directory_entry *pd: the root of your page table in memory
-
-void *map_pages(void *vaddr, struct physical_page *ppage, struct page_directory_entry *pd) {}

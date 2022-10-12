@@ -7,7 +7,8 @@ hello: hello.c
 	gcc -c -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall hello.c
 	gcc -c -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall rprintf.c
 	gcc -c -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall page.c
-	ld -Tkernel.ld  -e main -melf_i386  hello.o rprintf.o page.o -o hello
+	gcc -c -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall pgtbl.c
+	ld -Tkernel.ld  -e main -melf_i386  hello.o rprintf.o page.o pgtbl.o -o hello
 
 
 rootfs.img:
