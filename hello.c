@@ -2,12 +2,14 @@
 #include <string.h>
 #include "page.h"
 #include "pgtbl.h"
+#include "fat.h"
 #define MULTIBOOT2_HEADER_MAGIC         0xe85250d6
 
 const unsigned int multiboot_header[]__attribute__((section(".multiboot"))) = {MULTIBOOT2_HEADER_MAGIC, 0, 16, -(16+MULTIBOOT2_HEADER_MAGIC), 0, 12};
    //hard-coded array  grub is the bootloader,
 														   //multibootheader tells grub where to put the OS. 
 														   //Grub likes it at address 0
+
 
 int offset=0;
 void putc(char type){
@@ -84,6 +86,7 @@ unsigned char keyboard_map[128]=  //needs fixing
     0,  /* All other keys are undefined */
 };
 
+char buf[4096];
 void main() {
 
 	map_pages_init();
@@ -94,10 +97,11 @@ void main() {
 
 	//testing if mapping pages works
 	map_pages(0x4000000, thing, 1);
-
-
+			
 	free_physical_pages_function(thing);	
-    
+   	//hexdump(sectorbuf, 1); 
+	fatInit();
+	fatRead(fatOpen("/IDE"),buf, 4096);
 	
 	//while loop to print to screen
 	while(1) {

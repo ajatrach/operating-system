@@ -2,13 +2,16 @@ all: hello rootfs.img
 	mcopy -i rootfs.img@@1M hello ::/
 	mmd -i rootfs.img@@1M boot 
 	mcopy -i rootfs.img@@1M grub.cfg ::/boot
+	mcopy -i rootfs.img@@1M ide.s ::/
 
 hello: hello.c
 	gcc -c -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall hello.c
 	gcc -c -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall rprintf.c
 	gcc -c -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall page.c
 	gcc -c -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall pgtbl.c
-	ld -Tkernel.ld  -e main -melf_i386  hello.o rprintf.o page.o pgtbl.o -o hello
+	gcc -c -ffreestanding -mgeneral-regs-only -mno-mmx -m32 -march=i386 -fno-pie -fno-stack-protector -g3 -Wall fat.c
+	nasm -f elf32 -g -o ide.o ide.s
+	ld -Tkernel.ld  -e main -melf_i386  hello.o rprintf.o page.o pgtbl.o ide.o fat.o -o hello
 
 
 rootfs.img:
