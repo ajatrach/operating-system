@@ -101,7 +101,8 @@ void main() {
 	free_physical_pages_function(thing);	
    	//hexdump(sectorbuf, 1); 
 	fatInit();
-	fatRead(fatOpen("/IDE"),buf, 4096);
+	int rdenum = fatOpen("/IDE");
+	fatRead(rdenum, buf, 8);      //num of clusters * 512 = total size
 	
 	//while loop to print to screen
 	while(1) {

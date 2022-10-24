@@ -19,7 +19,7 @@ int fatInit(){
 		return -1;
 	}
 
-	//find number reserved sectors
+	//find number rese2-rved sectors
 	//read past reserved sectors
 	//location of fat is 2048+ #number of reserved sectors
 	
@@ -76,8 +76,22 @@ int fatOpen(char* path){     //open fat file system on disk   path = ex. USR/LOC
 void fatRead(int rdenum, char* databuff, int sizedatabuff){
 	//rde is index of rde table where you can find info about file
 	struct root_directory_entry *r = rdbuff;
-	unsigned char bbuff[512];  
-	ata_lba_read(r[rdenum].cluster, bbuff, sizedatabuff);   //ata read only reads 512 at time
+	unsigned char bbuff[512]; 
+       //get from r[denum].cluster to the location in disk
+	int clusternum= r[rdenum].cluster;   //clusters per fat?
+	int datalocation= 2048 + bs->num_fat_tables*bs->num_sectors_per_fat+bs->num_reserved_sectors+((bs->num_root_dir_entries*sizeof(struct root_directory_entry))/512) 
+		+(clusternum-2)*bs->num_sectors_per_cluster;    //is number of sectors   
+								
+	//ata_lba_read(datalocation, bbuff, 1);   //ata read only reads 512 at time int is # of clusters
+	int offset=0;					//
+	for(int i=0;i<sizedatabuff; i++){   //if there is still data left
+		ata_lba_read(datalocation+i, bbuff, 1);
+		for (int j=0; j<512; j++){
+			databuff[j+offset]=bbuff[j];
+		}
+		offset=offset+512;
+		
+	}
 
 }
 	
